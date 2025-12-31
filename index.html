@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAVA CUP Football</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a1931 0%, #1a3a5f 100%);
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a1931 0%, #1a3a5f 50%, #2a4a7f 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .pava-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 60px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .pava-cup {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5rem;
+            font-weight: 900;
+            color: #FFC107;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .community-football {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #A2FF00;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .pava {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #0099FF;
+            text-shadow: 0 0 15px rgba(0, 153, 255, 0.5);
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 40px;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #FFC107, #A2FF00, #0099FF);
+            border-radius: 2px;
+            animation: loading 2.5s ease-in-out forwards;
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+        }
+
+        .football-icon {
+            font-size: 4rem;
+            color: #FFC107;
+            margin-bottom: 30px;
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Main App Container */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+
+        .app-container.visible {
+            opacity: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #FFC107, #A2FF00, #0099FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #a0c8ff;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .pava-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFC107, #A2FF00);
+            color: #0a1931;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* Date Navigation */
+        .date-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            background: rgba(26, 58, 95, 0.8);
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 153, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .date-btn {
+            background: rgba(255, 193, 7, 0.1);
+            border: 2px solid rgba(255, 193, 7, 0.3);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #FFC107;
+            transition: all 0.2s ease;
+        }
+
+        .date-btn:hover {
+            background: rgba(255, 193, 7, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+        }
+
+        .date-input {
+            padding: 12px 20px;
+            border: 2px solid rgba(162, 255, 0, 0.3);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 200px;
+            background: rgba(10, 25, 49, 0.8);
+            color: #fff;
+        }
+
+        .date-input:hover, .date-input:focus {
+            border-color: #A2FF00;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(162, 255, 0, 0.2);
+        }
+
+        /* Tab Navigation */
+        .tab-container {
+            display: flex;
+            border-bottom: 2px solid rgba(0, 153, 255, 0.3);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 16px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            background: none;
+            border: none;
+            border-bottom: 4px solid transparent;
+            color: #a0c8ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: #0099FF;
+            border-bottom-color: rgba(0, 153, 255, 0.3);
+        }
+
+        .tab-btn.active {
+            color: #FFC107;
+            border-bottom-color: #FFC107;
+        }
+
+        .tab-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Content Area */
+        .content-area {
+            min-height: 400px;
+            margin-bottom: 60px;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            color: #a0c8ff;
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 153, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: #0099FF;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        /* Match Cards */
+        .league-section {
+            margin-bottom: 40px;
+            background: rgba(26, 58, 95, 0.8);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 153, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .league-header {
+            background: linear-gradient(to right, rgba(255, 193, 7, 0.2), rgba(0, 153, 255, 0.2));
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(0, 153, 255, 0.3);
+        }
+
+        .league-header h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #FFC107;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .match-row:hover {
+            background-color: rgba(162, 255, 0, 0.1);
+        }
+
+        .match-row:last-child {
+            border-bottom: none;
+        }
+
+        .match-status {
+            flex-shrink: 0;
+            width: 100px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-ft {
+            background-color: rgba(0, 153, 255, 0.2);
+            color: #0099FF;
+        }
+
+        .status-live {
+            background-color: rgba(255, 193, 7, 0.8);
+            color: #0a1931;
+            font-weight: 700;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-scheduled {
+            background-color: rgba(162, 255, 0, 0.2);
+            color: #A2FF00;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .match-details {
+            flex-grow: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team {
+            width: 40%;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .team-home {
+            text-align: right;
+            padding-right: 20px;
+            color: #0099FF;
+        }
+
+        .team-away {
+            text-align: left;
+            padding-left: 20px;
+            color: #FFC107;
+        }
+
+        .match-score {
+            flex-shrink: 0;
+            width: 100px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        /* Standings Table */
+        .standings-container {
+            background: rgba(26, 58, 95, 0.8);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 153, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .standings-header {
+            background: linear-gradient(to right, rgba(255, 193, 7, 0.3), rgba(0, 153, 255, 0.3));
+            color: #fff;
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(0, 153, 255, 0.3);
+        }
+
+        .standings-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #FFC107;
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table thead {
+            background-color: rgba(0, 153, 255, 0.1);
+        }
+
+        .standings-table th {
+            padding: 16px 12px;
+            text-align: center;
+            font-weight: 700;
+            color: #A2FF00;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(0, 153, 255, 0.3);
+        }
+
+        .standings-table td {
+            padding: 18px 12px;
+            text-align: center;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e0e0e0;
+        }
+
+        .standings-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .standings-table tbody tr:hover {
+            background-color: rgba(162, 255, 0, 0.1);
+        }
+
+        .standings-table tbody tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .team-cell {
+            text-align: left;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-name-link {
+            color: #0099FF;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .team-name-link:hover {
+            color: #FFC107;
+            background-color: rgba(255, 193, 7, 0.1);
+            text-decoration: underline;
+        }
+
+        .rank-champions {
+            color: #FFC107;
+            font-weight: 800;
+        }
+
+        .rank-relegation {
+            color: #ff6b6b;
+            font-weight: 800;
+        }
+
+        .stats-positive {
+            color: #A2FF00;
+        }
+
+        .stats-negative {
+            color: #ff6b6b;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            padding: 60px 20px;
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+
+        .empty-state p {
+            color: #FFC107;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state .subtext {
+            color: #a0c8ff;
+            font-size: 1rem;
+            font-weight: normal;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: rgba(26, 58, 95, 0.95);
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease;
+            border: 1px solid rgba(0, 153, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 30px;
+            border-bottom: 1px solid rgba(0, 153, 255, 0.3);
+            background: linear-gradient(to right, rgba(255, 193, 7, 0.1), rgba(0, 153, 255, 0.1));
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #FFC107;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #A2FF00;
+            cursor: pointer;
+            transition: color 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .close-btn:hover {
+            color: #FFC107;
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        /* Formation Pitch */
+        .formation-container {
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 153, 255, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .formation-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 153, 255, 0.2);
+        }
+
+        .formation-title {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(to right, rgba(255, 193, 7, 0.2), rgba(0, 153, 255, 0.2));
+            color: #FFC107;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pitch-container {
+            background: linear-gradient(to bottom, #1b5e20, #0d4213);
+            position: relative;
+            height: 300px;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .pitch-line {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .center-line {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .player-dot {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #1a202c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.7rem;
+            transform: translate(-50%, 50%);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-gk {
+            background-color: #FFC107;
+        }
+
+        .player-def {
+            background-color: #0099FF;
+        }
+
+        .player-mid {
+            background-color: #A2FF00;
+        }
+
+        .player-fwd {
+            background-color: #ff6b6b;
+        }
+
+        /* Squad Info */
+        .squad-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .squad-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(0, 153, 255, 0.2);
+        }
+
+        .squad-card h4 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #FFC107;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 153, 255, 0.3);
+        }
+
+        .manager-info {
+            font-weight: 600;
+            color: #A2FF00;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .player-list {
+            list-style-type: none;
+        }
+
+        .player-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .player-item:last-child {
+            border-bottom: none;
+        }
+
+        .player-pos {
+            font-weight: 700;
+            color: #0099FF;
+            min-width: 50px;
+        }
+
+        .player-name {
+            flex-grow: 1;
+            text-align: left;
+            padding-left: 15px;
+            color: #e0e0e0;
+        }
+
+        /* Team Players Modal */
+        .team-players-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .team-players-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .team-players-content {
+            background: rgba(26, 58, 95, 0.95);
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease;
+            border: 1px solid rgba(0, 153, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .players-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .player-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid rgba(0, 153, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .player-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            border-color: #FFC107;
+        }
+
+        .player-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #FFC107;
+            margin-bottom: 5px;
+        }
+
+        .player-detail-name {
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .player-detail-pos {
+            color: #A2FF00;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .player-detail-nat {
+            color: #0099FF;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .player-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #a0c8ff;
+        }
+
+        .player-stat {
+            text-align: center;
+        }
+
+        .player-stat-value {
+            font-weight: 700;
+            color: #FFC107;
+        }
+
+        /* MOM Display */
+        .mom-container {
+            background: linear-gradient(to right, rgba(255, 193, 7, 0.2), rgba(162, 255, 0, 0.2));
+            border-left: 6px solid #FFC107;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mom-icon {
+            font-size: 2rem;
+            color: #FFC107;
+        }
+
+        .mom-text {
+            font-weight: 800;
+            color: #FFC107;
+            font-size: 1.3rem;
+        }
+
+        /* Fullscreen Formation Modal */
+        .fullscreen-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .fullscreen-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .fullscreen-content {
+            background: rgba(26, 58, 95, 0.95);
+            border-radius: 16px;
+            max-width: 1200px;
+            width: 100%;
+            max-height: 95vh;
+            overflow-y: auto;
+            padding: 30px;
+            border: 1px solid rgba(0, 153, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .fullscreen-pitch {
+            height: 500px;
+            margin-bottom: 30px;
+        }
+
+        .pitch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #a0c8ff;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 153, 255, 0.2);
+            margin-top: 40px;
+        }
+
+        .pava-footer {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #FFC107;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .loading-screen .pava-cup {
+                font-size: 3.5rem;
+            }
+            
+            .loading-screen .community-football {
+                font-size: 1.3rem;
+            }
+            
+            .loading-screen .pava {
+                font-size: 2.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .date-navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .date-input {
+                width: 100%;
+            }
+            
+            .match-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .match-details {
+                flex-direction: column;
+                width: 100%;
+                gap: 15px;
+            }
+            
+            .team {
+                width: 100%;
+                text-align: left !important;
+                padding: 0 !important;
+            }
+            
+            .match-status {
+                width: 100%;
+                text-align: left;
+            }
+            
+            .pitch-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .standings-table {
+                font-size: 0.85rem;
+            }
+            
+            .standings-table th, .standings-table td {
+                padding: 12px 6px;
+            }
+            
+            .players-list {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .mt-4 {
+            margin-top: 16px;
+        }
+
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+
+        .p-4 {
+            padding: 16px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="football-icon">
+            <i class="fas fa-futbol"></i>
+        </div>
+        <div class="pava-logo">
+            <div class="pava-cup">PAVA CUP</div>
+            <div class="community-football">Community Football</div>
+            <div class="pava">PAVA</div>
+        </div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar"></div>
+        </div>
+        <div class="loading-text">Loading PAVA CUP Football...</div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>PAVA CUP Football Schedule</h1>
+            <p>Community Football Matches & Standings</p>
+            <div class="pava-badge">OFFICIAL PAVA CUP VIEWER</div>
+        </header>
+
+        <!-- Date Navigation -->
+        <div class="date-navigation">
+            <button class="date-btn" id="prev-day-btn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <input type="date" id="date-picker" class="date-input" value="2025-12-30">
+            
+            <button class="date-btn" id="next-day-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <button class="tab-btn active" id="matches-tab">Match Schedule</button>
+            <button class="tab-btn" id="standings-tab">PAVA CUP Standings</button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area" id="content-area">
+            <!-- Content will be dynamically loaded here -->
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading match data...</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>PAVA CUP Football Viewer • Community Football League</p>
+            <div class="pava-footer">PAVA</div>
+            <p class="mt-4">Click on any match to view detailed information including formations and lineups</p>
+            <p class="mt-2">Click on team names in standings to view their players</p>
+        </footer>
+    </div>
+
+    <!-- Match Detail Modal -->
+    <div class="modal-overlay" id="match-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">PAVA CUP Match Details</h2>
+                <button class="close-btn" id="close-modal-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Match details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Players Modal -->
+    <div class="team-players-modal" id="team-players-modal">
+        <div class="team-players-content">
+            <div class="modal-header">
+                <h2 id="team-players-title">PAVA CUP Team Players</h2>
+                <button class="close-btn" id="close-team-players-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="team-players-body">
+                <!-- Team players will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Formation Modal -->
+    <div class="fullscreen-modal" id="formation-modal">
+        <div class="fullscreen-content">
+            <div class="modal-header">
+                <h2 id="formation-modal-title">PAVA CUP Full Pitch View</h2>
+                <button class="close-btn" id="close-formation-modal-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="formation-modal-body">
+                <!-- Fullscreen formation will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PAVA CUP Football Data
+        const CLUB_FORMATIONS = {
+            "Arsenal": "3-2-1",
+            "Real Madrid": "4-2-3-1",
+            "Liverpool": "4-3-3",
+            "Manchester city ":"4-3-3",
+            "Fc Barcelona ":"3-4-3",
+            "Manchester United ":"4-2-3-1"
+        };
+
+        // Team Players Data
+        const TEAM_PLAYERS = {
+            "Arsenal": [
+                { number: 1, name: " ", position: "GK", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.5 },
+                { number: 4, name: " ", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.2 },
+                { number: 7, name: " ", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.1 },
+                { number: 9, name: " ", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.3 },
+                { number: 10, name: " ", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.7 },
+                { number: 11, name: " ", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.9 },
+                { number: 14, name: " ", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.0 }
+            ],
+            "Real Madrid": [
+                 { number: 1, name: "", position: "GK", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.5 },
+                { number: 4, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.2 },
+                { number: 7, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.1 },
+                { number: 9, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.3 },
+                { number: 10, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.7 },
+                { number: 11, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.9 },
+                { number: 14, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.0 }
+            ],
+            "Liverpool": [
+               { number: 1, name: "", position: "GK", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.5 },
+                { number: 4, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.2 },
+                { number: 7, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.1 },
+                { number: 9, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.3 },
+                { number: 10, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.7 },
+                { number: 11, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.9 },
+                { number: 14, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.0 }
+            ],
+            "Manchester city": [
+                  { number: 1, name: "", position: "GK", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.5 },
+                { number: 4, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.2 },
+                { number: 7, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.1 },
+                { number: 9, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.3 },
+                { number: 10, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.7 },
+                { number: 11, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.9 },
+                { number: 14, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.0 }
+            ],
+            "Fc Barcelona": [
+                 { number: 1, name: "", position: "GK", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.5 },
+                { number: 4, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.2 },
+                { number: 7, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.1 },
+                { number: 9, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.3 },
+                { number: 10, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.7 },
+                { number: 11, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.9 },
+                { number: 14, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.0 }
+            ],
+            "Manchester United": [
+                   { number: 1, name: "", position: "GK", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.5 },
+                { number: 4, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.2 },
+                { number: 7, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.1 },
+                { number: 9, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 9.3 },
+                { number: 10, name: "", position: "MID", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.7 },
+                { number: 11, name: "", position: "FWD", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.9 },
+                { number: 14, name: "", position: "DEF", nationality: "Ethiopia", goals: 0, assists: 0, rating: 8.0 }
+            ]
+        };
+
+        // Helper function to format date as YYYY-MM-DD
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Get today's date and related dates
+        const today = new Date();
+        const todayString = formatDate(today);
+
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        const yesterdayString = formatDate(yesterday);
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const tomorrowString = formatDate(tomorrow);
+
+        // Mock match data for PAVA CUP
+      // Fix the ALL_MOCK_MATCHES array (remove trailing commas after the last match)
+const ALL_MOCK_MATCHES = [
+    // Today's PAVA CUP matches
+    { date: todayString, id: 101, league: "PAVA CUP Premier", team1: "Man United", team2: "Man City", score1: 3, score2: 1, status: "FT", mom: "De Bruyne (PAVA UTD)" },
+{ date: "2025-12-31", id: 999, league: "AVA CUP Premier", team1: "Manchester United", team2: "Arsenal", score1: null, score2: null, status: "21:45", mom: null },
+           { date: "2025-12-31", id: 999, league: "AVA CUP Premier", team1: "Liverpool", team2: "Manchester city ", score1: null, score2: null, status: "21:45", mom: null },
+           { date: "2025-12-31", id: 999, league: "AVA CUP Premier", team1: "Fc Barcelona", team2: "Real Madrid", score1: null, score2: null, status: "21:45", mom: null },
+        
+             
+            // User requested date (2025-12-30) - PAVA CUP Final
+            
+        ];
+
+        // Mock standings data for PAVA CUP
+        const mockStandingsData = [
+            { team: "Arsenal", p: 0, w: 0, d: 0, l: 0, gd: 0, pts: 0 },
+            { team: "Liverpool", p: 0, w: 0, d: 0, l: 0, gd: 0, pts: 0 },
+            { team: "Fc Barcelona", p: 0, w: 0, d: 0, l: 0, gd: 0, pts: 0 },
+            { team: "Real Madrid", p: 0, w: 0, d: 0, l: 0, gd: 0, pts: 0 },
+            { team: "Manchester city", p: 0, w: 0, d: 0, l: 0, gd: 0, pts: 0 },
+            { team: "Manchester United",p: 0, w: 0, d: 0, l: 0, gd: 0, pts: 0 },
+      
+        ].sort((a, b) => b.pts - a.pts || b.gd - a.gd);
+
+
+        // Application State
+        let currentDate = "2025-12-31";
+        let currentView = "matches";
+        let selectedMatch = null;
+
+        // DOM Elements
+        const loadingScreen = document.getElementById('loading-screen');
+        const appContainer = document.getElementById('app-container');
+        const datePicker = document.getElementById('date-picker');
+        const prevDayBtn = document.getElementById('prev-day-btn');
+        const nextDayBtn = document.getElementById('next-day-btn');
+        const matchesTab = document.getElementById('matches-tab');
+        const standingsTab = document.getElementById('standings-tab');
+        const contentArea = document.getElementById('content-area');
+        const matchModal = document.getElementById('match-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const teamPlayersModal = document.getElementById('team-players-modal');
+        const closeTeamPlayersBtn = document.getElementById('close-team-players-btn');
+        const formationModal = document.getElementById('formation-modal');
+        const closeFormationModalBtn = document.getElementById('close-formation-modal-btn');
+
+        // Initialize the application
+        function init() {
+            // Show loading screen for 2.5 seconds
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                appContainer.classList.add('visible');
+                loadDataForDate(currentDate);
+            }, 2500);
+            
+            // Set initial date
+            datePicker.value = currentDate;
+            
+            // Set up event listeners
+            setupEventListeners();
+        }
+
+        // Set up all event listeners
+        function setupEventListeners() {
+            // Date navigation
+            datePicker.addEventListener('change', (e) => {
+                currentDate = e.target.value;
+                loadDataForDate(currentDate);
+            });
+            
+            prevDayBtn.addEventListener('click', () => {
+                changeDateBy(-1);
+            });
+            
+            nextDayBtn.addEventListener('click', () => {
+                changeDateBy(1);
+            });
+            
+            // Tab navigation
+            matchesTab.addEventListener('click', () => {
+                setActiveTab('matches');
+            });
+            
+            standingsTab.addEventListener('click', () => {
+                setActiveTab('standings');
+            });
+            
+            // Modal controls
+            closeModalBtn.addEventListener('click', () => {
+                matchModal.classList.remove('active');
+            });
+            
+            closeTeamPlayersBtn.addEventListener('click', () => {
+                teamPlayersModal.classList.remove('active');
+            });
+            
+            closeFormationModalBtn.addEventListener('click', () => {
+                formationModal.classList.remove('active');
+            });
+            
+            // Close modals when clicking on overlay
+            matchModal.addEventListener('click', (e) => {
+                if (e.target === matchModal) {
+                    matchModal.classList.remove('active');
+                }
+            });
+            
+            teamPlayersModal.addEventListener('click', (e) => {
+                if (e.target === teamPlayersModal) {
+                    teamPlayersModal.classList.remove('active');
+                }
+            });
+            
+            formationModal.addEventListener('click', (e) => {
+                if (e.target === formationModal) {
+                    formationModal.classList.remove('active');
+                }
+            });
+        }
+
+        // Change date by the specified number of days
+        function changeDateBy(days) {
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() + days);
+            currentDate = formatDate(date);
+            datePicker.value = currentDate;
+            loadDataForDate(currentDate);
+        }
+
+        // Set the active tab
+        function setActiveTab(tab) {
+            currentView = tab;
+            
+            // Update tab UI
+            matchesTab.classList.toggle('active', tab === 'matches');
+            standingsTab.classList.toggle('active', tab === 'standings');
+            
+            // Update standings tab disabled state
+            const hasPAVACUPMatches = checkPAVACUPMatches(currentDate);
+            if (tab === 'standings' && !hasPAVACUPMatches) {
+                standingsTab.classList.add('disabled');
+                return;
+            } else {
+                standingsTab.classList.remove('disabled');
+            }
+            
+            // Load appropriate content
+            if (tab === 'matches') {
+                loadMatchesContent(currentDate);
+            } else {
+                loadStandingsContent();
+            }
+        }
+
+        // Check if there are PAVA CUP matches for a date
+        function checkPAVACUPMatches(date) {
+            const matches = ALL_MOCK_MATCHES.filter(m => m.date === date);
+            return matches.some(m => m.league.includes("PAVA CUP"));
+        }
+
+        // Load data for a specific date
+        function loadDataForDate(date) {
+            // Show loading state
+            contentArea.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading PAVA CUP match data...</p>
+                </div>
+            `;
+            
+            // Simulate API delay
+            setTimeout(() => {
+                // Update standings tab state based on matches
+                const hasPAVACUPMatches = checkPAVACUPMatches(date);
+                standingsTab.classList.toggle('disabled', !hasPAVACUPMatches);
+                
+                // Load appropriate content based on current view
+                if (currentView === 'matches') {
+                    loadMatchesContent(date);
+                } else {
+                    if (hasPAVACUPMatches) {
+                        loadStandingsContent();
+                    } else {
+                        // If no PAVA CUP matches but standings tab is active, switch to matches
+                        setActiveTab('matches');
+                    }
+                }
+            }, 500);
+        }
+
+        // Load matches content for a specific date
+        function loadMatchesContent(date) {
+            const matches = ALL_MOCK_MATCHES.filter(m => m.date === date);
+            
+            if (matches.length === 0) {
+                contentArea.innerHTML = `
+                    <div class="empty-state">
+                        <p>No PAVA CUP matches found for this date.</p>
+                        <p class="subtext">Try selecting a different date (e.g., 2025-12-30).</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group matches by league
+            const matchesByLeague = {};
+            matches.forEach(match => {
+                if (!matchesByLeague[match.league]) {
+                    matchesByLeague[match.league] = [];
+                }
+                matchesByLeague[match.league].push(match);
+            });
+            
+            // Generate HTML for matches
+            let matchesHTML = '';
+            
+            for (const league in matchesByLeague) {
+                const leagueMatches = matchesByLeague[league];
+                
+                matchesHTML += `
+                    <div class="league-section">
+                        <div class="league-header">
+                            <h3><i class="fas fa-trophy"></i> ${league}</h3>
+                        </div>
+                        
+                        <div class="match-list">
+                `;
+                
+                leagueMatches.forEach(match => {
+                    const statusClass = match.status.startsWith('LIVE') || match.status === 'HT' 
+                        ? 'status-live' 
+                        : match.status === 'FT' 
+                            ? 'status-ft' 
+                            : 'status-scheduled';
+                    
+                    const scoreDisplay = (match.score1 !== null && match.score2 !== null) 
+                        ? `${match.score1} - ${match.score2}` 
+                        : '- : -';
+                    
+                    matchesHTML += `
+                        <div class="match-row" data-match-id="${match.id}">
+                            <div class="match-status">
+                                <span class="status-badge ${statusClass}">${match.status}</span>
+                            </div>
+                            <div class="match-details">
+                                <div class="team team-home">${match.team1}</div>
+                                <div class="match-score">${scoreDisplay}</div>
+                                <div class="team team-away">${match.team2}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                matchesHTML += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            contentArea.innerHTML = matchesHTML;
+            
+            // Add event listeners to match rows
+            document.querySelectorAll('.match-row').forEach(row => {
+                row.addEventListener('click', function() {
+                    const matchId = parseInt(this.getAttribute('data-match-id'));
+                    showMatchDetails(matchId);
+                });
+            });
+        }
+
+        // Load standings content
+        function loadStandingsContent() {
+            let standingsHTML = `
+                <div class="standings-container">
+                    <div class="standings-header">
+                        <h3><i class="fas fa-trophy"></i> PAVA CUP Premier Standings</h3>
+                    </div>
+                    <table class="standings-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Club</th>
+                                <th>P</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>GD</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            mockStandingsData.forEach((team, index) => {
+                let rankClass = '';
+                let rankIcon = '';
+                
+                if (index < 4) {
+                    rankClass = 'rank-champions';
+                    rankIcon = '🏆';
+                } else if (index >= mockStandingsData.length - 3) {
+                    rankClass = 'rank-relegation';
+                    rankIcon = '⬇️';
+                }
+                
+                standingsHTML += `
+                    <tr>
+                        <td class="${rankClass}">${index + 1}</td>
+                        <td class="team-cell">
+                            <span>${rankIcon}</span>
+                            <a class="team-name-link" data-team="${team.team}">${team.team}</a>
+                        </td>
+                        <td>${team.p}</td>
+                        <td class="stats-positive">${team.w}</td>
+                        <td>${team.d}</td>
+                        <td class="stats-negative">${team.l}</td>
+                        <td>${team.gd}</td>
+                        <td class="stats-positive" style="font-weight: 800;">${team.pts}</td>
+                    </tr>
+                `;
+            });
+            
+            standingsHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            contentArea.innerHTML = standingsHTML;
+            
+            // Add event listeners to team names
+            document.querySelectorAll('.team-name-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const teamName = this.getAttribute('data-team');
+                    showTeamPlayers(teamName);
+                });
+            });
+        }
+
+        // Show team players in modal
+        function showTeamPlayers(teamName) {
+            const players = TEAM_PLAYERS[teamName] || [
+                { number: 1, name: "Unknown Player", position: "GK", nationality: "Unknown", goals: 0, assists: 0, rating: 0 }
+            ];
+            
+            // Set modal title
+            document.getElementById('team-players-title').textContent = `${teamName} - PAVA CUP Squad`;
+            
+            // Generate players list
+            let playersHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 1.2rem; color: #A2FF00;">Total Players: ${players.length}</div>
+                    <div style="font-size: 0.9rem; color: #a0c8ff;">Click on match details to see formations and tactics</div>
+                </div>
+                <div class="players-list">
+            `;
+            
+            players.forEach(player => {
+                // Get flag emoji based on nationality
+                let flag = "🏴";
+                if (player.nationality === "Brazil") flag = "🇧🇷";
+                else if (player.nationality === "England") flag = "🏴󠁧󠁢󠁥󠁮󠁧󠁿";
+                else if (player.nationality === "Spain") flag = "🇪🇸";
+                else if (player.nationality === "France") flag = "🇫🇷";
+                else if (player.nationality === "Portugal") flag = "🇵🇹";
+                else if (player.nationality === "Belgium") flag = "🇧🇪";
+                else if (player.nationality === "Norway") flag = "🇳🇴";
+                else if (player.nationality === "Argentina") flag = "🇦🇷";
+                else if (player.nationality === "Colombia") flag = "🇨🇴";
+                
+                playersHTML += `
+                    <div class="player-card">
+                        <div class="player-number">#${player.number}</div>
+                        <div class="player-detail-name">${player.name}</div>
+                        <div class="player-detail-pos">${player.position}</div>
+                        <div class="player-detail-nat">${flag} ${player.nationality}</div>
+                        <div class="player-stats">
+                            <div class="player-stat">
+                                <div class="player-stat-value">${player.goals}</div>
+                                <div>Goals</div>
+                            </div>
+                            <div class="player-stat">
+                                <div class="player-stat-value">${player.assists}</div>
+                                <div>Assists</div>
+                            </div>
+                            <div class="player-stat">
+                                <div class="player-stat-value">${player.rating}/10</div>
+                                <div>Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            playersHTML += `</div>`;
+            
+            // Set modal body content
+            document.getElementById('team-players-body').innerHTML = playersHTML;
+            
+            // Show modal
+            teamPlayersModal.classList.add('active');
+        }
+
+        // Show match details in modal
+        function showMatchDetails(matchId) {
+            const match = ALL_MOCK_MATCHES.find(m => m.id === matchId);
+            
+            if (!match) return;
+            
+            selectedMatch = match;
+            
+            // Set modal title
+            document.getElementById('modal-title').textContent = `${match.team1} vs ${match.team2} - ${match.league}`;
+            
+            // Generate formation
+            const formation1 = CLUB_FORMATIONS[match.team1] || "4-4-2";
+            const formation2 = CLUB_FORMATIONS[match.team2] || "4-4-2";
+            
+            // Generate player data
+            const squad = (team) => [
+                { name: `GK - ${team} Keeper`, pos: 'GK' },
+                { name: `Def - ${team} Centerback`, pos: 'DEF' },
+                { name: `Mid - ${team} Playmaker`, pos: 'MID' },
+                { name: `Fwd - ${team} Striker`, pos: 'FWD' }
+            ];
+            
+            // Generate manager name
+            // Fix the manager function
+const manager = (team) => {
+    if (team === 'Arsenal') return 'PAVA Manager';
+    if (team === 'Liverpool') return 'Jürgen Klopp';
+    if (team === 'Manchester city') return 'Pep Guardiola';
+    if (team === 'Fc Barcelona') return 'Xavi Hernandez';
+    if (team === 'Real Madrid') return 'Carlo Ancelotti';
+    if (team === 'Manchester United') return 'Erik ten Hag';
+    return `${team.split(' ')[0]} Manager`;
+};
+            
+            // Check if match is finished
+            const isFinished = match.status === "FT";
+            
+            // Generate modal content
+            let modalContent = '';
+            
+            if (isFinished) {
+                // Post-match content
+                modalContent += `
+                    <div class="text-center mb-6">
+                        <span class="text-lg font-semibold" style="color: #A2FF00;">PAVA CUP FULL TIME RESULT</span>
+                        <p class="text-2xl font-extrabold" style="color: #FFC107;">${match.score1} - ${match.score2}</p>
+                    </div>
+                    
+                    <div class="mom-container">
+                        <div class="mom-icon">🏆</div>
+                        <div class="mom-text">PAVA CUP Man of the Match: ${match.mom || 'To be announced'}</div>
+                    </div>
+                `;
+            } else {
+                // Pre-match content
+                modalContent += `
+                    <div class="text-center mb-6">
+                        <span class="text-lg font-semibold" style="color: #0099FF;">PAVA CUP PRE-MATCH / LIVE</span>
+                        <p class="text-sm" style="color: #a0c8ff;">Predicted lineups & management staff</p>
+                    </div>
+                `;
+            }
+            
+            // Add formation visualizer
+            modalContent += `
+                <div class="formation-container" id="formation-visualizer">
+                    <div class="formation-title">
+                        <i class="fas fa-futbol"></i> PAVA CUP Formation: ${formation1} vs ${formation2}
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <div class="pitch-container" id="pitch-preview">
+                        <!-- Pitch will be generated by JavaScript -->
+                    </div>
+                </div>
+            `;
+            
+            // Add squad information
+            modalContent += `
+                <div class="squad-container">
+                    <div class="squad-card">
+                        <h4>${match.team1}</h4>
+                        <div class="manager-info">PAVA CUP Manager: ${manager(match.team1)}</div>
+                        <ul class="player-list">
+            `;
+            
+            squad(match.team1).forEach(player => {
+                modalContent += `
+                    <li class="player-item">
+                        <span class="player-pos">${player.pos}:</span>
+                        <span class="player-name">${player.name}</span>
+                    </li>
+                `;
+            });
+            
+            modalContent += `
+                        </ul>
+                    </div>
+                    
+                    <div class="squad-card">
+                        <h4>${match.team2}</h4>
+                        <div class="manager-info">PAVA CUP Manager: ${manager(match.team2)}</div>
+                        <ul class="player-list">
+            `;
+            
+            squad(match.team2).forEach(player => {
+                modalContent += `
+                    <li class="player-item">
+                        <span class="player-pos">${player.pos}:</span>
+                        <span class="player-name">${player.name}</span>
+                    </li>
+                `;
+            });
+            
+            modalContent += `
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // Set modal body content
+            document.getElementById('modal-body').innerHTML = modalContent;
+            
+            // Generate pitch preview
+            generatePitchPreview(formation1, formation2);
+            
+            // Add event listener to formation visualizer
+            document.getElementById('formation-visualizer').addEventListener('click', () => {
+                showFullscreenFormation(match, formation1, formation2);
+            });
+            
+            // Show modal
+            matchModal.classList.add('active');
+        }
+
+        // Generate pitch preview
+        function generatePitchPreview(formation1, formation2) {
+            const pitchContainer = document.getElementById('pitch-preview');
+            pitchContainer.innerHTML = '';
+            
+            // Add pitch markings
+            pitchContainer.innerHTML = `
+                <div class="center-line"></div>
+                <div class="center-circle"></div>
+                <div class="pitch-line" style="top: 10%; left: 5%; width: 90%; height: 2px;"></div>
+                <div class="pitch-line" style="top: 30%; left: 5%; width: 90%; height: 2px;"></div>
+                <div class="pitch-line" style="top: 50%; left: 5%; width: 90%; height: 2px;"></div>
+                <div class="pitch-line" style="top: 70%; left: 5%; width: 90%; height: 2px;"></div>
+                <div class="pitch-line" style="top: 90%; left: 5%; width: 90%; height: 2px;"></div>
+            `;
+            
+            // Generate player positions for team 1 (left side)
+            const formation1Layers = formation1.split('-').map(Number);
+            const positionYs1 = [
+                { y: 5, count: 1, role: 'GK' },
+            ];
+            
+            const totalLayers1 = formation1Layers.length;
+            const yStart = 15;
+            const yEnd = 90;
+            const yStep1 = totalLayers1 > 1 ? (yEnd - yStart) / (totalLayers1 - 1) : 0;
+            
+            formation1Layers.forEach((count, index) => {
+                const yPos = yStart + (index * yStep1);
+                positionYs1.push({ y: yPos, count, role: index === 0 ? 'DEF' : index === 1 ? 'MID' : 'FWD' });
+            });
+            
+            // Add players for team 1
+            positionYs1.flatMap(layer => {
+                const playerCount = layer.count;
+                const hStart = 25;
+                const hEnd = 45;
+                const hRange = hEnd - hStart;
+                const hStep = playerCount > 1 ? hRange / (playerCount - 1) : 0;
+                
+                for (let i = 0; i < playerCount; i++) {
+                    const xPos = playerCount > 1 ? hStart + (i * hStep) : (hStart + hEnd) / 2;
+                    const dotClass = layer.y === 5 ? 'player-gk' : 
+                                    layer.role === 'DEF' ? 'player-def' :
+                                    layer.role === 'MID' ? 'player-mid' : 'player-fwd';
+                    
+                    const playerDot = document.createElement('div');
+                    playerDot.className = `player-dot ${dotClass}`;
+                    playerDot.style.left = `${xPos}%`;
+                    playerDot.style.bottom = `${layer.y}%`;
+                    playerDot.textContent = layer.role === 'GK' ? 'GK' : layer.role.charAt(0);
+                    pitchContainer.appendChild(playerDot);
+                }
+            });
+            
+            // Generate player positions for team 2 (right side)
+            const formation2Layers = formation2.split('-').map(Number);
+            const positionYs2 = [
+                { y: 5, count: 1, role: 'GK' },
+            ];
+            
+            const totalLayers2 = formation2Layers.length;
+            const yStep2 = totalLayers2 > 1 ? (yEnd - yStart) / (totalLayers2 - 1) : 0;
+            
+            formation2Layers.forEach((count, index) => {
+                const yPos = yStart + (index * yStep2);
+                positionYs2.push({ y: yPos, count, role: index === 0 ? 'DEF' : index === 1 ? 'MID' : 'FWD' });
+            });
+            
+            // Add players for team 2
+            positionYs2.flatMap(layer => {
+                const playerCount = layer.count;
+                const hStart = 55;
+                const hEnd = 75;
+                const hRange = hEnd - hStart;
+                const hStep = playerCount > 1 ? hRange / (playerCount - 1) : 0;
+                
+                for (let i = 0; i < playerCount; i++) {
+                    const xPos = playerCount > 1 ? hStart + (i * hStep) : (hStart + hEnd) / 2;
+                    const dotClass = layer.y === 5 ? 'player-gk' : 
+                                    layer.role === 'DEF' ? 'player-def' :
+                                    layer.role === 'MID' ? 'player-mid' : 'player-fwd';
+                    
+                    const playerDot = document.createElement('div');
+                    playerDot.className = `player-dot ${dotClass}`;
+                    playerDot.style.left = `${xPos}%`;
+                    playerDot.style.bottom = `${layer.y}%`;
+                    playerDot.textContent = layer.role === 'GK' ? 'GK' : layer.role.charAt(0);
+                    pitchContainer.appendChild(playerDot);
+                }
+            });
+        }
+
+        // Show fullscreen formation modal
+        function showFullscreenFormation(match, formation1, formation2) {
+            // Set modal title
+            document.getElementById('formation-modal-title').textContent = 
+                `PAVA CUP Full Pitch View: ${match.team1} (${formation1}) vs ${match.team2} (${formation2})`;
+            
+            // Generate content for fullscreen formation
+            let formationContent = `
+                <div class="pitch-grid">
+                    <div>
+                        <h3 style="font-size: 1.5rem; font-weight: 700; color: #0099FF; text-align: center; margin-bottom: 20px;">
+                            ${match.team1} PAVA CUP Formation: ${formation1}
+                        </h3>
+                        <div class="pitch-container fullscreen-pitch" id="fullscreen-pitch-1"></div>
+                    </div>
+                    
+                    <div>
+                        <h3 style="font-size: 1.5rem; font-weight: 700; color: #FFC107; text-align: center; margin-bottom: 20px;">
+                            ${match.team2} PAVA CUP Formation: ${formation2}
+                        </h3>
+                        <div class="pitch-container fullscreen-pitch" id="fullscreen-pitch-2"></div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('formation-modal-body').innerHTML = formationContent;
+            
+            // Generate fullscreen pitches
+            generateFullscreenPitch('fullscreen-pitch-1', formation1, '#0099FF');
+            generateFullscreenPitch('fullscreen-pitch-2', formation2, '#FFC107');
+            
+            // Show modal
+            formationModal.classList.add('active');
+        }
+
+        // Generate fullscreen pitch
+        function generateFullscreenPitch(containerId, formation, teamColor) {
+            const pitchContainer = document.getElementById(containerId);
+            pitchContainer.innerHTML = '';
+            
+            // Add pitch markings
+            pitchContainer.innerHTML = `
+                <div class="center-line"></div>
+                <div class="center-circle"></div>
+                <div class="pitch-line" style="top: 10%; left: 5%; width: 90%; height: 2px;"></div>
+                <div class="pitch-line" style="top: 30%; left: 5%; width: 90%; height: 2px;"></div>
+                <div class="pitch-line" style="top: 50%; left: 5%; width: 90%; height: 2px;"></div>
+                <div class="pitch-line" style="top: 70%; left: 5%; width: 90%; height: 2px;"></div>
+                <div class="pitch-line" style="top: 90%; left: 5%; width: 90%; height: 2px;"></div>
+            `;
+            
+            // Generate player positions
+            const formationLayers = formation.split('-').map(Number);
+            const positionYs = [
+                { y: 5, count: 1, role: 'GK' },
+            ];
+            
+            const totalLayers = formationLayers.length;
+            const yStart = 15;
+            const yEnd = 90;
+            const yStep = totalLayers > 1 ? (yEnd - yStart) / (totalLayers - 1) : 0;
+            
+            formationLayers.forEach((count, index) => {
+                const yPos = yStart + (index * yStep);
+                positionYs.push({ y: yPos, count, role: index === 0 ? 'DEF' : index === 1 ? 'MID' : 'FWD' });
+            });
+            
+            // Add players
+            positionYs.flatMap(layer => {
+                const playerCount = layer.count;
+                const hStart = 10;
+                const hEnd = 90;
+                const hRange = hEnd - hStart;
+                const hStep = playerCount > 1 ? hRange / (playerCount - 1) : 0;
+                
+                for (let i = 0; i < playerCount; i++) {
+                    const xPos = playerCount > 1 ? hStart + (i * hStep) : 50;
+                    const dotClass = layer.y === 5 ? 'player-gk' : 
+                                    layer.role === 'DEF' ? 'player-def' :
+                                    layer.role === 'MID' ? 'player-mid' : 'player-fwd';
+                    
+                    const playerDot = document.createElement('div');
+                    playerDot.className = `player-dot ${dotClass}`;
+                    playerDot.style.left = `${xPos}%`;
+                    playerDot.style.bottom = `${layer.y}%`;
+                    playerDot.textContent = layer.role === 'GK' ? 'GK' : layer.role.charAt(0);
+                    playerDot.style.borderColor = teamColor;
+                    pitchContainer.appendChild(playerDot);
+                }
+            });
+        }
+
+        // Initialize the application when the page loads
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
